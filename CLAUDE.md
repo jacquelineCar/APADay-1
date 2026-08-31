@@ -70,6 +70,22 @@
       swallowing log failures — the badge moved while nothing was recorded.
       Ordering kept; every outcome now redirects back with a banner,
       including "Moved, but the history row failed".
+- Dashboard added: ✅ 31 Aug 2026, branch build-2-dashboard.
+  /admin is now a worklist, not a redirect to /admin/leads.
+  The plan says "no analytics dashboards", so this is deliberately the
+  operational kind: every number is a link into a filtered queue, and
+  nothing is shown that you cannot act on.
+    - red banner when any helpdesk lead has sat in new_lead beyond the
+      two-hour promise from the plan (HELPDESK_SLA_MS in lib/crm.ts)
+    - "Waiting longest" lists the 8 oldest untouched leads, OLDEST first,
+      each flagged with its age and marked over SLA where it applies
+    - tiles: new/untouched, open in pipeline, won this month, collected
+    - pipeline and type breakdowns, both linking to filtered lists
+    - counts use head+count queries, so it does not read whole tables
+  Also added type filtering to /admin/leads (?type=helpdesk|membership|
+  training). It composes with ?status=, and a stage move now returns you
+  to the same filtered view instead of dropping you back to All.
+  Renders in ~25ms against 101 people / 126 enquiries / 221 history rows.
 - Resend domain verified: ❌ NO. Do not mark this done until it is.
   Checked against the Resend API 31 Aug 2026: the account holds exactly one
   domain, austpayroll.com.au, at status "not_started" — its DNS records have

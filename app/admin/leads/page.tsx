@@ -1,11 +1,19 @@
+import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabase";
-import { currentUser } from "@/lib/auth";
-import { signOut } from "../auth-actions";
+import { updateStatus } from "../crm-actions";
+import {
+  STATUSES,
+  STATUS_LABELS,
+  ATTR_LABELS,
+  when,
+  type Status,
+} from "@/lib/crm";
 
-// Leads must always be fresh — never serve a cached queue.
+// The queue must always be fresh — never serve a cached lead list.
 export const dynamic = "force-dynamic";
 
 type Person = {
+  id: string;
   name: string | null;
   email: string;
   phone: string | null;
@@ -19,44 +27,37 @@ type Lead = {
   type: string;
   subject: string | null;
   message: string | null;
-  status: string;
+  status: Status;
   created_at: string;
   people: Person | null;
 };
 
-const ATTR_LABELS: Array<[string, string]> = [
-  ["membership_number", "Membership"],
-  ["industry", "Industry"],
-  ["state", "State"],
-  ["modern_award", "Modern award"],
-];
+export default async function LeadsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>;
+}) {
+  const params = await searchParams;
+  const filter = STATUSES.includes(params.status as Status)
+    ? (params.status as Status)
+    : null;
 
-function when(iso: string): string {
-  return new Date(iso).toLocaleString("en-AU", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Australia/Sydney",
-  });
-}
-
-export default async function LeadsPage() {
-  const user = await currentUser();
   let leads: Lead[] = [];
   let failure: string | null = null;
 
   try {
     const supabase = supabaseAdmin();
-    const { data, error } = await supabase
+    let q = supabase
       .from("contacts")
       .select(
-        "id, type, subject, message, status, created_at, people ( name, email, phone, company, role, attributes )",
+        "id, type, subject, message, status, created_at, people ( id, name, email, phone, company, role, attributes )",
       )
       .order("created_at", { ascending: false })
-      .limit(100);
+      .limit(200);
 
+    if (filter) q = q.eq("status", filter);
+
+    const { data, error } = await q;
     if (error) throw new Error(error.message);
     leads = (data ?? []) as unknown as Lead[];
   } catch (e) {
@@ -64,91 +65,118 @@ export default async function LeadsPage() {
   }
 
   return (
-    <>
-      <div className="adminbar">
-        <div className="wrap">
-          <div className="title">
-            <span className="org">APA</span> — Leads
-          </div>
-          <div className="count">
-            {failure
-              ? "not connected"
-              : `${leads.length} ${leads.length === 1 ? "enquiry" : "enquiries"}, newest first`}
-          </div>
-          <form className="signout" action={signOut}>
-            <span className="who-in">{user?.email}</span>
-            <button type="submit">Sign out</button>
-          </form>
-        </div>
+    <main className="wrap">
+      <div className="pagehead">
+        <h2>Enquiries</h2>
+        <p className="sub">
+          {failure
+            ? "not connected"
+            : `${leads.length} ${leads.length === 1 ? "enquiry" : "enquiries"}, newest first`}
+        </p>
       </div>
 
-      <main className="wrap">
-        {failure && (
-          <div className="setup">
-            <p>
-              <strong>Not connected to Supabase yet.</strong>
+      <nav className="filters">
+        <Link className={!filter ? "on" : ""} href="/admin/leads">
+          All
+        </Link>
+        {STATUSES.map((s) => (
+          <Link
+            key={s}
+            className={filter === s ? "on" : ""}
+            href={`/admin/leads?status=${s}`}
+          >
+            {STATUS_LABELS[s]}
+          </Link>
+        ))}
+      </nav>
+
+      {failure && (
+        <div className="setup">
+          <p>
+            <strong>Not connected to Supabase.</strong>
+          </p>
+          <p>{failure}</p>
+        </div>
+      )}
+
+      {!failure && leads.length === 0 && (
+        <div className="empty">
+          <p style={{ margin: 0 }}>
+            {filter
+              ? `Nothing at "${STATUS_LABELS[filter]}" right now.`
+              : "No enquiries yet. Submit one from the public form and it will appear here within seconds."}
+          </p>
+        </div>
+      )}
+
+      {leads.map((lead) => {
+        const person = lead.people;
+        const attributes = person?.attributes ?? {};
+        const present = ATTR_LABELS.filter(([key]) => attributes[key]);
+
+        return (
+          <article className="lead" key={lead.id}>
+            <div className="lead-head">
+              <span className={`badge ${lead.type}`}>{lead.type}</span>
+              <span className="badge status">{STATUS_LABELS[lead.status]}</span>
+              <span className="when">{when(lead.created_at)}</span>
+            </div>
+
+            <p className="who">
+              {person ? (
+                <Link href={`/admin/people/${person.id}`}>
+                  {person.name ?? person.email}
+                </Link>
+              ) : (
+                "Name not given"
+              )}
             </p>
-            <p>{failure}</p>
-            <p style={{ marginBottom: 0 }}>
-              Once <code>.env.local</code> has the real APA project keys and the
-              migration in <code>supabase/migrations/</code> has been applied,
-              this page will list every enquiry as it arrives.
+            <p className="contactline">
+              {[person?.email, person?.phone, person?.company, person?.role]
+                .filter(Boolean)
+                .join(" · ")}
             </p>
-          </div>
-        )}
 
-        {!failure && leads.length === 0 && (
-          <div className="empty">
-            <p style={{ margin: 0 }}>
-              No enquiries yet. Submit one from the public form and it will appear
-              here within seconds.
-            </p>
-          </div>
-        )}
+            {lead.subject && <p className="subject">{lead.subject}</p>}
+            {lead.message && <p className="message">{lead.message}</p>}
 
-        {leads.map((lead) => {
-          const person = lead.people;
-          const attributes = person?.attributes ?? {};
-          const present = ATTR_LABELS.filter(([key]) => attributes[key]);
+            <ul className="attrs">
+              {present.length === 0 && (
+                <li className="none">No membership or award details given</li>
+              )}
+              {present.map(([key, label]) => (
+                <li key={key}>
+                  <span>{label}</span>
+                  {attributes[key]}
+                </li>
+              ))}
+            </ul>
 
-          return (
-            <article className="lead" key={lead.id}>
-              <div className="lead-head">
-                <span className={`badge ${lead.type}`}>{lead.type}</span>
-                <span className="badge status">{lead.status}</span>
-                <span className="when">{when(lead.created_at)}</span>
-              </div>
-
-              <p className="who">{person?.name ?? "Name not given"}</p>
-              <p className="contactline">
-                {[
-                  person?.email,
-                  person?.phone,
-                  person?.company,
-                  person?.role,
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </p>
-
-              {lead.subject && <p className="subject">{lead.subject}</p>}
-              {lead.message && <p className="message">{lead.message}</p>}
-
-              <ul className="attrs">
-                {present.length === 0 && (
-                  <li className="none">No membership or award details given</li>
-                )}
-                {present.map(([key, label]) => (
-                  <li key={key}>
-                    <span>{label}</span>
-                    {attributes[key]}
-                  </li>
+            <form className="pipeline" action={updateStatus}>
+              <input type="hidden" name="contact_id" value={lead.id} />
+              <label htmlFor={`to-${lead.id}`}>Move to</label>
+              <select
+                id={`to-${lead.id}`}
+                name="to_status"
+                defaultValue={lead.status}
+              >
+                {STATUSES.map((s) => (
+                  <option key={s} value={s}>
+                    {STATUS_LABELS[s]}
+                  </option>
                 ))}
-              </ul>
-            </article>
-          );
-        })}
-      </main>
-    </>
+              </select>
+              <input
+                name="note"
+                type="text"
+                placeholder="Note (optional)"
+                maxLength={300}
+              />
+              <button type="submit">Update</button>
+            </form>
+          </article>
+        );
+      })}
+    </main>
   );
 }

@@ -59,7 +59,15 @@ export async function submitInquiry(form: FormData): Promise<void> {
   if (stateRaw) incomingAttributes.state = stateRaw;
   if (modernAward) incomingAttributes.modern_award = modernAward;
 
-  const supabase = supabaseAdmin();
+  // If Supabase isn't configured, or is unreachable, the visitor gets the
+  // "please try again" banner — never a raw server exception page.
+  let supabase;
+  try {
+    supabase = supabaseAdmin();
+  } catch (e) {
+    console.error("supabase not configured", e);
+    redirect("/?error=server");
+  }
 
   // ---- Person: find, then merge-update or insert. Never duplicate. ----
   const { data: existing, error: lookupError } = await supabase

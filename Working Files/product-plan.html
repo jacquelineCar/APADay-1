@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APA — Product Plan</title>
+<style>
+  :root{
+    --navy:#48608A;
+    --gold:#F0BD18;
+    --greyblue:#A0AEC1;
+    --ink:#1B2331;
+    --ink-soft:#4A5568;
+    --page:#FFFFFF;
+    --surface:#F5F7FA;
+    --rule:#D6DDE7;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--page);
+    color:var(--ink);
+    font-family:"Inter","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+    font-size:17px;
+    line-height:1.65;
+    font-feature-settings:"kern" 1,"liga" 1;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 28px 96px;}
+
+  /* masthead */
+  header.masthead{
+    border-top:6px solid var(--navy);
+    border-bottom:1px solid var(--rule);
+    padding:44px 0 30px;
+    margin-bottom:46px;
+  }
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--navy);
+    margin:0 0 14px;
+  }
+  h1{
+    font-size:41px;
+    line-height:1.12;
+    letter-spacing:-.02em;
+    font-weight:800;
+    margin:0 0 16px;
+    color:var(--ink);
+  }
+  h1 .org{color:var(--navy);}
+  .standfirst{
+    font-size:19px;
+    line-height:1.55;
+    color:var(--ink-soft);
+    margin:0;
+    max-width:62ch;
+  }
+  .rule-gold{height:4px;width:72px;background:var(--gold);margin:26px 0 0;}
+
+  /* sections */
+  section{margin:0 0 54px;}
+  h2{
+    font-size:13px;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--navy);
+    margin:0 0 6px;
+    padding-bottom:10px;
+    border-bottom:2px solid var(--navy);
+  }
+  h2 .num{color:var(--greyblue);margin-right:12px;font-variant-numeric:tabular-nums;}
+  h3{
+    font-size:25px;
+    line-height:1.25;
+    letter-spacing:-.01em;
+    font-weight:700;
+    margin:28px 0 12px;
+  }
+  h4{
+    font-size:12px;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--ink-soft);
+    margin:30px 0 12px;
+  }
+  p{margin:0 0 16px;max-width:70ch;}
+  .lede{font-size:19px;line-height:1.6;}
+  code{
+    font-family:ui-monospace,SFMono-Regular,"Cascadia Mono",Consolas,"Liberation Mono",monospace;
+    font-size:.88em;
+    background:var(--surface);
+    border:1px solid var(--rule);
+    border-radius:3px;
+    padding:1px 5px;
+    white-space:nowrap;
+  }
+
+  /* pull quote + note */
+  .pull{
+    border-left:4px solid var(--gold);
+    background:var(--surface);
+    padding:20px 24px;
+    margin:0 0 22px;
+  }
+  .pull p:last-child{margin-bottom:0;}
+  .notbuilding{
+    border:1px solid var(--rule);
+    border-left:4px solid var(--greyblue);
+    padding:18px 22px;
+    background:#fff;
+  }
+  .notbuilding p:last-child{margin-bottom:0;}
+
+  /* interview table */
+  .kv-scroll{overflow-x:auto;}
+  table.kv{
+    width:100%;
+    border-collapse:collapse;
+    font-size:16px;
+    margin:6px 0 0;
+  }
+  table.kv th,table.kv td{
+    text-align:left;
+    vertical-align:top;
+    padding:13px 16px 13px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  table.kv th{
+    width:31%;
+    font-weight:700;
+    color:var(--navy);
+    font-size:12px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    padding-top:16px;
+  }
+  table.kv tr:first-child th,table.kv tr:first-child td{border-top:1px solid var(--rule);}
+  .swatches{display:flex;flex-wrap:wrap;gap:10px;margin:2px 0 0;padding:0;list-style:none;}
+  .swatches li{display:flex;align-items:center;gap:8px;font-size:14px;}
+  .chip{width:20px;height:20px;border:1px solid rgba(27,35,49,.28);display:inline-block;flex:0 0 auto;}
+  .chip-navy{background:#48608A;}
+  .chip-gold{background:#F0BD18;}
+  .chip-grey{background:#A0AEC1;}
+
+  /* build blocks */
+  .build{
+    border:1px solid var(--rule);
+    border-top:5px solid var(--navy);
+    padding:4px 30px 30px;
+    margin:0 0 34px;
+    background:#fff;
+  }
+  .build .tag{
+    display:inline-block;
+    margin:26px 0 0;
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:#fff;
+    background:var(--navy);
+    padding:5px 11px;
+  }
+  .build h3{margin-top:14px;}
+
+  /* checklists */
+  ul.check{list-style:none;margin:0;padding:0;}
+  ul.check li{
+    position:relative;
+    padding:0 0 12px 34px;
+    max-width:70ch;
+  }
+  ul.check li::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:5px;
+    width:15px;
+    height:15px;
+    border:2px solid var(--navy);
+    background:#fff;
+  }
+  ul.check.crit li::before{border-color:var(--greyblue);}
+  ul.check.crit li::after{
+    content:"";
+    position:absolute;
+    left:4px;
+    top:9px;
+    width:7px;
+    height:7px;
+    background:var(--gold);
+  }
+  ul.plain{margin:0 0 16px;padding-left:22px;}
+  ul.plain li{padding-bottom:8px;max-width:70ch;}
+
+  footer.foot{
+    border-top:1px solid var(--rule);
+    padding-top:22px;
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+  footer.foot .rule-gold{margin:0 0 18px;}
+
+  @media (max-width:620px){
+    body{font-size:16px;}
+    h1{font-size:31px;}
+    h3{font-size:21px;}
+    .wrap{padding:0 20px 64px;}
+    .build{padding:4px 20px 24px;}
+    table.kv th{width:auto;display:block;padding-bottom:2px;border-bottom:none;}
+    table.kv td{display:block;padding-top:0;}
+    table.kv tr:first-child td{border-top:none;}
+  }
+  @media print{
+    body{font-size:11pt;}
+    .build,.pull,.notbuilding{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">Infinite Leverage &middot; Product Plan</p>
+  <h1><span class="org">APA</span> &mdash; the inquiry front door</h1>
+  <p class="standfirst">A CRM for membership and payroll training inquiries: every query
+  arrives classified, attached to a person, and impossible to lose.</p>
+  <div class="rule-gold"></div>
+</header>
+
+<section>
+  <h2><span class="num">01</span>What we&rsquo;re actually building and why</h2>
+
+  <div class="pull">
+    <p class="lede">In one sentence: a front door for APA inquiries that makes every query
+    arrive <strong>already classified</strong> and <strong>already attached to a person</strong>,
+    so a helpdesk question from a valid member lands in the Help Desk queue without a human
+    guessing where it belongs &mdash; and nothing that isn&rsquo;t helpdesk can quietly die in the
+    wrong area, which is the exact failure named today.</p>
+  </div>
+
+  <h4>Who it&rsquo;s for</h4>
+  <p>Me and the APA team as the operators working the queue, and the payroll practitioner on
+  the other side of the form &mdash; a member with a payroll question, someone joining or renewing
+  membership, or someone asking about training.</p>
+
+  <h4>What we are deliberately not building</h4>
+  <div class="notbuilding">
+    <p>No affiliates, no subscriptions, no cohorts, no analytics dashboards, no integrations
+    beyond what&rsquo;s named here. If it isn&rsquo;t load-bearing for capturing and working a
+    lead, it&rsquo;s out.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">02</span>The interview, on the record</h2>
+  <div class="kv-scroll">
+  <table class="kv">
+    <tr>
+      <th scope="row">What&rsquo;s broken today</th>
+      <td>Calls are answered in minutes; emails and tickets inside a 2-hour SLA. But an inquiry
+      sent to the wrong area waits for a human to transfer it &mdash; so the SLA is missed, or the
+      request is never transferred at all.</td>
+    </tr>
+    <tr>
+      <th scope="row">The 90-day win</th>
+      <td>Every helpdesk-related query goes straight into the Help Desk queue, gated on valid
+      membership. Membership can be looked up against an existing list.</td>
+    </tr>
+    <tr>
+      <th scope="row">Volume</th>
+      <td>Approximately 200 contacts per week &mdash; about 40 a day.</td>
+    </tr>
+    <tr>
+      <th scope="row">What APA sells</th>
+      <td>Membership and training for payroll knowledge.</td>
+    </tr>
+    <tr>
+      <th scope="row">Inquiry types<br><code>contacts.type</code></th>
+      <td><code>helpdesk</code> &middot; <code>membership</code> &middot; <code>training</code><br>
+      Helpdesk is the only type worked inside this CRM. The other two exist so senders
+      self-select out and those inquiries are captured, timestamped and forwarded rather than
+      lost.</td>
+    </tr>
+    <tr>
+      <th scope="row">Design system</th>
+      <td>Academic &mdash; serious, structured, editorial, trustworthy.</td>
+    </tr>
+    <tr>
+      <th scope="row">Brand colours</th>
+      <td>
+        <ul class="swatches">
+          <li><span class="chip chip-navy"></span> Main <code>#48608A</code></li>
+          <li><span class="chip chip-gold"></span> Accent <code>#F0BD18</code></li>
+          <li><span class="chip chip-grey"></span> Background <code>#A0AEC1</code></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">Custom attributes<br><code>people.attributes</code></th>
+      <td>
+        <code>membership_number</code> &mdash; short typed note<br>
+        <code>industry</code> &mdash; short typed note<br>
+        <code>state</code> &mdash; pick-from-list: NSW, VIC, QLD, WA, SA, TAS, ACT, NT<br>
+        <code>modern_award</code> &mdash; short typed note
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">Domain</th>
+      <td>www.apahelpdesk.com.au</td>
+    </tr>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">03</span>The brief (drives every /goal command)</h2>
+  <p>You are my engineering partner for building my CRM today. The stack is already installed
+  and wired (Next.js on Vercel, Supabase, Resend, domain). Do not reinstall or reprovision
+  anything. Build the app with two surfaces: a public marketing site that captures leads, and
+  an <code>/admin</code> CRM. The <code>/admin</code> section is open and unprotected at first;
+  it gets locked down with email-and-password Supabase Auth later in the build. Do not add any
+  auth, login page, or route protection until I explicitly ask for it.</p>
+
+  <h4>The CRM has exactly four parts</h4>
+  <ul class="plain">
+    <li><strong>People</strong> &mdash; a contact directory, one row per person, deduplicated by
+    email. Columns: <code>id</code>, <code>email</code> (unique), <code>name</code>,
+    <code>phone</code>, <code>company</code>, <code>role</code>, <code>source_site</code>,
+    <code>ok_to_contact</code>, <code>attributes</code> (jsonb), <code>created_at</code>,
+    <code>updated_at</code>. The custom attributes named above live inside
+    <code>attributes</code>, with those keys and those types.</li>
+
+    <li><strong>Contacts</strong> &mdash; an inquiry pipeline. Each inquiry links to a person and
+    moves through stages <code>new_lead</code>, <code>contacted</code>,
+    <code>discovery_call</code>, <code>proposal</code>, <code>won</code>, <code>lost</code>.
+    Columns: <code>id</code>, <code>person_id</code>, <code>type</code>, <code>subject</code>,
+    <code>message</code>, <code>source</code>, <code>status</code>, <code>metadata</code> (jsonb),
+    <code>created_at</code>. The <code>type</code> field is constrained to exactly
+    <code>helpdesk</code>, <code>membership</code>, <code>training</code>.</li>
+
+    <li><strong>activity_log</strong> &mdash; every status change on a Contacts row writes one row
+    here. Columns: <code>id</code>, <code>contact_id</code>, <code>person_id</code>,
+    <code>from_status</code>, <code>to_status</code>, <code>actor</code>, <code>note</code>,
+    <code>created_at</code>.</li>
+
+    <li><strong>Orders</strong> &mdash; what people bought. Columns: <code>id</code>,
+    <code>person_id</code>, <code>product_name</code>, <code>amount_cents</code>,
+    <code>currency</code>, <code>status</code> (pending, paid, refunded, cancelled),
+    <code>created_at</code>.</li>
+
+    <li><strong>Newsletter</strong> &mdash; people who opted in to email, tracked by
+    <code>people.ok_to_contact = true</code>. No separate table.</li>
+  </ul>
+
+  <h4>Conventions</h4>
+  <ul class="plain">
+    <li>Upsert people by email; never duplicate a person.</li>
+    <li>Access Supabase server-side with the service key; never expose secrets to the client;
+    keys live in environment variables only.</li>
+    <li>Keep it simple: no affiliates, no subscriptions, no cohorts.</li>
+    <li>Work one step at a time and wait for my approval before each step.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">04</span>Build 1 (small) &mdash; Prove the loop</h2>
+
+  <div class="build">
+    <span class="tag">Build 1 &middot; Small</span>
+    <h3>Goal</h3>
+    <p>A stranger can submit an inquiry on the live site and I can see that lead inside
+    <code>/admin</code>, on the same day, without anyone touching the database by hand. This
+    closes the exact gap named today &mdash; an inquiry that arrives in the wrong area and either
+    breaches the 2-hour SLA or never gets transferred at all. Every submission now arrives
+    carrying its own type and its own membership number, in one list I can see. It is the
+    smallest thing that proves the whole system works end to end.
+    <strong>Nothing else matters until this is real.</strong></p>
+
+    <h3>Scope</h3>
+    <p>The People and Contacts tables with the custom attributes wired into the jsonb column; a
+    working contact form on the live marketing site that writes a People row (upserted by email)
+    and a linked Contacts row; one admin login with a single verified account; one admin page
+    that lists incoming leads newest first.</p>
+
+    <h4>Definition of Done &mdash; every box must be true</h4>
+    <ul class="check">
+      <li>The contact form is live on <strong>www.apahelpdesk.com.au</strong>, not localhost.</li>
+      <li>Submitting it creates exactly one People row and one linked Contacts row, deduplicated
+      by email on repeat submits.</li>
+      <li>The form offers exactly three types: <code>helpdesk</code>, <code>membership</code>,
+      <code>training</code>.</li>
+      <li>The custom attributes are saved correctly inside <code>attributes</code>:
+      <code>membership_number</code>, <code>industry</code>, <code>state</code>,
+      <code>modern_award</code>.</li>
+      <li>A new Contacts row lands in status <code>new_lead</code>.</li>
+      <li>I can log in to <code>/admin</code> with my one seeded account.</li>
+      <li>The admin leads page shows the submission within seconds, newest first.</li>
+      <li>I personally run the full flow once: submit as a visitor, log in, see it.</li>
+    </ul>
+
+    <h4>Success Criteria &mdash; how we know it&rsquo;s good, not just done</h4>
+    <ul class="check crit">
+      <li>From a cold start, I can go from submit to visible in under 60 seconds.</li>
+      <li>Two submissions from the same email produce one person, not two.</li>
+      <li>I can read the lead&rsquo;s name, type, message and custom attributes &mdash; membership
+      number, industry, state, modern award &mdash; on the admin page without opening
+      Supabase.</li>
+      <li>No lead can land and go unseen, which is the failure mode named today: a misrouted
+      inquiry that nobody transfers.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">05</span>Build 2 (all) &mdash; The system I run the business from</h2>
+
+  <div class="build">
+    <span class="tag">Build 2 &middot; All</span>
+    <h3>Goal</h3>
+    <p>Turn the proven loop into the place I actually manage relationships and money. After this,
+    I work leads, record what people bought, and keep the newsletter list entirely from
+    <code>/admin</code> behind my login, and every new lead gets an automatic confirmation email.
+    This is what makes the ninety-day win achievable: <strong>every helpdesk query from a valid
+    member arriving in the Help Desk queue, with no human triage step in front of it.</strong></p>
+
+    <h3>Scope</h3>
+    <p>The rest of the <code>/admin</code> back end behind my login: the full People directory,
+    all inquiries with working pipeline stages, the Orders list, and the Newsletter list
+    (<code>ok_to_contact = true</code>). Plus Resend wired so a confirmation email fires on form
+    submit. Every Contacts status change writes an activity_log row.</p>
+
+    <h4>Definition of Done &mdash; every box must be true</h4>
+    <ul class="check">
+      <li>All four parts (People, Contacts, Orders, Newsletter) are visible and usable in
+      <code>/admin</code>, and all of <code>/admin</code> sits behind my login.</li>
+      <li>I can move a Contacts row through <code>new_lead</code> &rarr; <code>contacted</code>
+      &rarr; <code>discovery_call</code> &rarr; <code>proposal</code> &rarr; <code>won</code> or
+      <code>lost</code> from the interface.</li>
+      <li>Each status change writes one activity_log row with <code>from_status</code>,
+      <code>to_status</code> and <code>actor</code>.</li>
+      <li>The People directory is searchable and shows the custom attributes.</li>
+      <li>I can add an Orders row against a person and see it on their record.</li>
+      <li>The Newsletter list shows everyone with <code>ok_to_contact = true</code>.</li>
+      <li>Resend is connected, the sending domain <strong>apahelpdesk.com.au</strong> is verified,
+      and a real confirmation email arrives after a form submit.</li>
+    </ul>
+
+    <h4>Success Criteria &mdash; how we know it&rsquo;s good, not just done</h4>
+    <ul class="check crit">
+      <li>I can run a lead from first inquiry to <code>won</code> without leaving
+      <code>/admin</code> or touching the database.</li>
+      <li>A person&rsquo;s full history &mdash; their inquiries, status changes and orders &mdash;
+      is visible in one place.</li>
+      <li>A test submission produces a confirmation email in the inbox, not spam, with
+      apahelpdesk.com.au as the sender.</li>
+      <li>Nothing in <code>/admin</code> is reachable without logging in.</li>
+      <li>At the real inquiry volume &mdash; roughly 200 contacts a week, about 40 a day &mdash;
+      this keeps up without me dropping to the database by hand.</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="rule-gold"></div>
+  <p>This page is a formatted view of <strong>Working Files/product-plan.md</strong>. If anything
+  here disagrees with <strong>CLAUDE.md</strong>, CLAUDE.md wins. The technical companion &mdash;
+  data model and system design &mdash; is <strong>docs/architecture/architecture.html</strong>.</p>
+</footer>
+
+</div>
+</body>
+</html>

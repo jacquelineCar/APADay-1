@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APA — Architecture</title>
+<style>
+  :root{
+    --navy:#48608A;
+    --gold:#F0BD18;
+    --greyblue:#A0AEC1;
+    --ink:#1B2331;
+    --ink-soft:#4A5568;
+    --page:#FFFFFF;
+    --surface:#F5F7FA;
+    --rule:#D6DDE7;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--page);
+    color:var(--ink);
+    font-family:"Inter","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+    font-size:17px;
+    line-height:1.65;
+    font-feature-settings:"kern" 1,"liga" 1;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 28px 96px;}
+
+  header.masthead{
+    border-top:6px solid var(--navy);
+    border-bottom:1px solid var(--rule);
+    padding:44px 0 30px;
+    margin-bottom:46px;
+  }
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--navy);
+    margin:0 0 14px;
+  }
+  h1{
+    font-size:41px;
+    line-height:1.12;
+    letter-spacing:-.02em;
+    font-weight:800;
+    margin:0 0 16px;
+  }
+  h1 .org{color:var(--navy);}
+  .standfirst{
+    font-size:19px;
+    line-height:1.55;
+    color:var(--ink-soft);
+    margin:0;
+    max-width:62ch;
+  }
+  .rule-gold{height:4px;width:72px;background:var(--gold);margin:26px 0 0;}
+
+  section{margin:0 0 54px;}
+  h2{
+    font-size:13px;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--navy);
+    margin:0 0 6px;
+    padding-bottom:10px;
+    border-bottom:2px solid var(--navy);
+  }
+  h2 .num{color:var(--greyblue);margin-right:12px;font-variant-numeric:tabular-nums;}
+  h3{
+    font-size:22px;
+    line-height:1.25;
+    letter-spacing:-.01em;
+    font-weight:700;
+    margin:34px 0 10px;
+  }
+  h4{
+    font-size:12px;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--ink-soft);
+    margin:30px 0 12px;
+  }
+  p{margin:0 0 16px;max-width:70ch;}
+  .lede{font-size:19px;line-height:1.6;}
+  code{
+    font-family:ui-monospace,SFMono-Regular,"Cascadia Mono",Consolas,"Liberation Mono",monospace;
+    font-size:.88em;
+    background:var(--surface);
+    border:1px solid var(--rule);
+    border-radius:3px;
+    padding:1px 5px;
+    white-space:nowrap;
+  }
+  .pull{
+    border-left:4px solid var(--gold);
+    background:var(--surface);
+    padding:20px 24px;
+    margin:0 0 22px;
+  }
+  .pull p:last-child{margin-bottom:0;}
+
+  /* layer cards */
+  .layer{
+    border:1px solid var(--rule);
+    border-left:4px solid var(--navy);
+    padding:16px 22px;
+    margin:0 0 14px;
+    background:#fff;
+  }
+  .layer p:last-child{margin-bottom:0;}
+  .layer .name{
+    display:block;
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--navy);
+    margin-bottom:6px;
+  }
+
+  /* lead flow steps */
+  ol.flow{list-style:none;counter-reset:step;margin:0;padding:0;}
+  ol.flow li{
+    counter-increment:step;
+    position:relative;
+    padding:0 0 20px 52px;
+    max-width:70ch;
+  }
+  ol.flow li::before{
+    content:counter(step);
+    position:absolute;
+    left:0;
+    top:1px;
+    width:30px;
+    height:30px;
+    background:var(--navy);
+    color:#fff;
+    font-size:14px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  ol.flow li::after{
+    content:"";
+    position:absolute;
+    left:14px;
+    top:33px;
+    bottom:2px;
+    width:2px;
+    background:var(--rule);
+  }
+  ol.flow li:last-child{padding-bottom:0;}
+  ol.flow li:last-child::after{display:none;}
+  ol.flow li.build2::before{background:var(--gold);color:var(--ink);}
+
+  /* data model tables */
+  .t-scroll{overflow-x:auto;margin:0 0 10px;}
+  table.dm{
+    width:100%;
+    min-width:560px;
+    border-collapse:collapse;
+    font-size:15px;
+  }
+  table.dm caption{
+    caption-side:top;
+    text-align:left;
+    font-size:17px;
+    font-weight:700;
+    color:var(--ink);
+    padding:0 0 8px;
+  }
+  table.dm caption span{
+    display:block;
+    font-size:14px;
+    font-weight:400;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+  table.dm th,table.dm td{
+    text-align:left;
+    vertical-align:top;
+    padding:9px 14px 9px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  table.dm thead th{
+    font-size:11px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:#fff;
+    background:var(--navy);
+    padding:9px 14px 9px 12px;
+    border-bottom:none;
+  }
+  table.dm tbody th{
+    font-weight:600;
+    font-family:ui-monospace,SFMono-Regular,"Cascadia Mono",Consolas,"Liberation Mono",monospace;
+    font-size:14px;
+    color:var(--ink);
+    white-space:nowrap;
+    padding-left:12px;
+    width:26%;
+  }
+  table.dm tbody td:nth-of-type(1){width:26%;color:var(--ink-soft);}
+  table.dm tbody tr:nth-child(even){background:var(--surface);}
+  table.dm ul{margin:6px 0 0;padding-left:18px;}
+  table.dm ul li{padding-bottom:3px;}
+  .nokey{
+    border:1px solid var(--rule);
+    border-left:4px solid var(--greyblue);
+    padding:16px 22px;
+    background:#fff;
+  }
+  .nokey p:last-child{margin-bottom:0;}
+
+  ul.plain{margin:0 0 16px;padding-left:22px;}
+  ul.plain li{padding-bottom:8px;max-width:70ch;}
+
+  footer.foot{
+    border-top:1px solid var(--rule);
+    padding-top:22px;
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+  footer.foot .rule-gold{margin:0 0 18px;}
+
+  @media (max-width:620px){
+    body{font-size:16px;}
+    h1{font-size:31px;}
+    h3{font-size:20px;}
+    .wrap{padding:0 20px 64px;}
+  }
+  @media print{
+    body{font-size:11pt;}
+    .layer,.pull,.t-scroll{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">Infinite Leverage &middot; Architecture</p>
+  <h1><span class="org">APA</span> &mdash; how the CRM is built</h1>
+  <p class="standfirst">The technical companion to the product plan: the layers, the lead flow,
+  and every table, in plain English.</p>
+  <div class="rule-gold"></div>
+</header>
+
+<section>
+  <h2><span class="num">01</span>Overview</h2>
+  <div class="pull">
+    <p class="lede">This is a Next.js (App Router) app deployed on Vercel, backed by a Supabase
+    Postgres database, with Resend for email. It has two surfaces: a public marketing site at
+    <strong>www.apahelpdesk.com.au</strong> that captures leads, and an <code>/admin</code> CRM
+    where those leads get worked. <code>/admin</code> starts open and unprotected, and gets locked
+    down with Supabase Auth later in the build.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">02</span>How the pieces fit</h2>
+
+  <div class="layer">
+    <span class="name">Next.js &mdash; App Router</span>
+    <p>Renders the public site and <code>/admin</code>. Server code handles form submissions and
+    all database reads and writes. Nothing talks to the database from the browser.</p>
+  </div>
+
+  <div class="layer">
+    <span class="name">Vercel</span>
+    <p>Hosts and deploys the app. Environment variables hold every secret. A push deploys &mdash;
+    there is no manual deploy step.</p>
+  </div>
+
+  <div class="layer">
+    <span class="name">Supabase &mdash; Postgres</span>
+    <p>The database. Accessed server-side only, using the service key. Secrets never reach the
+    browser.</p>
+  </div>
+
+  <div class="layer">
+    <span class="name">Resend</span>
+    <p>Sends the confirmation email when a lead comes in. Wired in Build 2, once the sending
+    domain <code>apahelpdesk.com.au</code> is verified.</p>
+  </div>
+
+  <h4>Environment variables</h4>
+  <div class="t-scroll">
+  <table class="dm">
+    <thead>
+      <tr><th scope="col">Variable</th><th scope="col">What it&rsquo;s for</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">NEXT_PUBLIC_SUPABASE_URL</th>
+        <td>The address of the Supabase project. Safe in the browser.</td>
+      </tr>
+      <tr>
+        <th scope="row">NEXT_PUBLIC_SUPABASE_ANON_KEY</th>
+        <td>The public key. Safe in the browser; can only do what row-level security
+        allows.</td>
+      </tr>
+      <tr>
+        <th scope="row">SUPABASE_SERVICE_ROLE_KEY</th>
+        <td>The full-access key. Server-side only &mdash; never sent to the
+        browser.</td>
+      </tr>
+      <tr>
+        <th scope="row">RESEND_API_KEY</th>
+        <td>Lets the server send the confirmation email. Server-side only.</td>
+      </tr>
+      <tr>
+        <th scope="row">NEXT_PUBLIC_SITE_URL</th>
+        <td>The live domain, used to build email links and redirects:
+        <code>https://www.apahelpdesk.com.au</code></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">03</span>The lead flow</h2>
+  <p>One inquiry, traced end to end.</p>
+  <ol class="flow">
+    <li>A visitor fills in the form on the public site and picks a type:
+    <code>helpdesk</code>, <code>membership</code> or <code>training</code>.</li>
+    <li>The server <strong>upserts a People row by email</strong> &mdash; if that address has
+    written before, it reuses the existing person rather than creating a second one.</li>
+    <li>The server creates a <strong>linked Contacts row</strong> in status
+    <code>new_lead</code>, carrying the type, subject and message.</li>
+    <li class="build2"><strong>(Build 2)</strong> Resend sends the sender a confirmation email
+    from <code>apahelpdesk.com.au</code>, so they know it landed.</li>
+    <li>The operator sees the lead in <code>/admin</code>, newest first, and works it &mdash; a
+    valid helpdesk inquiry goes to the Help Desk queue with no triage guess in front of it.</li>
+    <li>Every time the status moves, <strong>one activity_log row is written</strong>, recording
+    what it moved from, what it moved to, and who moved it.</li>
+  </ol>
+</section>
+
+<section>
+  <h2><span class="num">04</span>Data model</h2>
+
+  <h3>People</h3>
+  <p>One row per person, deduplicated by email.</p>
+  <div class="t-scroll">
+  <table class="dm">
+    <thead>
+      <tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">id</th><td>uuid</td><td>Primary key.</td></tr>
+      <tr><th scope="row">email</th><td>text</td><td>Unique &mdash; the dedupe key.</td></tr>
+      <tr><th scope="row">name</th><td>text</td><td></td></tr>
+      <tr><th scope="row">phone</th><td>text</td><td></td></tr>
+      <tr><th scope="row">company</th><td>text</td><td></td></tr>
+      <tr><th scope="row">role</th><td>text</td><td></td></tr>
+      <tr><th scope="row">source_site</th><td>text</td><td>Which site captured them.</td></tr>
+      <tr><th scope="row">ok_to_contact</th><td>boolean</td>
+        <td>True means they&rsquo;re on the newsletter.</td></tr>
+      <tr><th scope="row">attributes</th><td>jsonb</td>
+        <td>The APA custom attributes live here:
+          <ul>
+            <li><code>membership_number</code> &mdash; text (short typed note)</li>
+            <li><code>industry</code> &mdash; text (short typed note)</li>
+            <li><code>state</code> &mdash; text, from a fixed list: NSW, VIC, QLD, WA, SA, TAS,
+            ACT, NT</li>
+            <li><code>modern_award</code> &mdash; text (short typed note)</li>
+          </ul>
+        </td></tr>
+      <tr><th scope="row">created_at</th><td>timestamptz</td><td></td></tr>
+      <tr><th scope="row">updated_at</th><td>timestamptz</td><td></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Contacts</h3>
+  <p>The inquiry pipeline. Each row links to a person.</p>
+  <div class="t-scroll">
+  <table class="dm">
+    <thead>
+      <tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">id</th><td>uuid</td><td>Primary key.</td></tr>
+      <tr><th scope="row">person_id</th><td>uuid</td><td>References People(id).</td></tr>
+      <tr><th scope="row">type</th><td>text</td>
+        <td>Constrained to the APA inquiry types: <code>helpdesk</code>,
+        <code>membership</code>, <code>training</code>.</td></tr>
+      <tr><th scope="row">subject</th><td>text</td><td></td></tr>
+      <tr><th scope="row">message</th><td>text</td><td></td></tr>
+      <tr><th scope="row">source</th><td>text</td><td></td></tr>
+      <tr><th scope="row">status</th><td>text</td>
+        <td><code>new_lead</code>, <code>contacted</code>, <code>discovery_call</code>,
+        <code>proposal</code>, <code>won</code>, <code>lost</code>.</td></tr>
+      <tr><th scope="row">metadata</th><td>jsonb</td><td></td></tr>
+      <tr><th scope="row">created_at</th><td>timestamptz</td><td></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>activity_log</h3>
+  <p>One row per Contacts status change.</p>
+  <div class="t-scroll">
+  <table class="dm">
+    <thead>
+      <tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">id</th><td>uuid</td><td>Primary key.</td></tr>
+      <tr><th scope="row">contact_id</th><td>uuid</td><td>References Contacts(id).</td></tr>
+      <tr><th scope="row">person_id</th><td>uuid</td><td>References People(id).</td></tr>
+      <tr><th scope="row">from_status</th><td>text</td><td></td></tr>
+      <tr><th scope="row">to_status</th><td>text</td><td></td></tr>
+      <tr><th scope="row">actor</th><td>text</td><td>Who made the change.</td></tr>
+      <tr><th scope="row">note</th><td>text</td><td></td></tr>
+      <tr><th scope="row">created_at</th><td>timestamptz</td><td></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Orders</h3>
+  <p>What people bought.</p>
+  <div class="t-scroll">
+  <table class="dm">
+    <thead>
+      <tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">id</th><td>uuid</td><td>Primary key.</td></tr>
+      <tr><th scope="row">person_id</th><td>uuid</td><td>References People(id).</td></tr>
+      <tr><th scope="row">product_name</th><td>text</td><td></td></tr>
+      <tr><th scope="row">amount_cents</th><td>integer</td><td></td></tr>
+      <tr><th scope="row">currency</th><td>text</td><td></td></tr>
+      <tr><th scope="row">status</th><td>text</td>
+        <td><code>pending</code>, <code>paid</code>, <code>refunded</code>,
+        <code>cancelled</code>.</td></tr>
+      <tr><th scope="row">created_at</th><td>timestamptz</td><td></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Newsletter</h3>
+  <div class="nokey">
+    <p>Not a table. Tracked by <code>People.ok_to_contact = true</code>.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">05</span>Relationships</h2>
+  <ul class="plain">
+    <li>One <strong>Person</strong> has many <strong>Contacts</strong>.</li>
+    <li>One <strong>Contacts</strong> row has many <strong>activity_log</strong> rows.</li>
+    <li>One <strong>Person</strong> has many <strong>Orders</strong>.</li>
+  </ul>
+</section>
+
+<footer class="foot">
+  <div class="rule-gold"></div>
+  <p>This is the technical companion to <strong>Working Files/product-plan.md</strong> and matches
+  its brief exactly. If anything here disagrees with <strong>CLAUDE.md</strong>, CLAUDE.md
+  wins.</p>
+</footer>
+
+</div>
+</body>
+</html>

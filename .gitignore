@@ -1,0 +1,15 @@
+# Secrets — never commit
+.env.local
+.env*.local
+
+# Dependencies / build
+node_modules/
+.next/
+.vercel/
+
+# OS
+.DS_Store
+
+# TypeScript build info
+*.tsbuildinfo
+next-env.d.ts

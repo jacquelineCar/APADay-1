@@ -19,15 +19,6 @@ export default async function LoginPage({
 
   return (
     <>
-      <div className="adminbar">
-        <div className="wrap">
-          <div className="title">
-            <span className="org">APA</span> — Admin
-          </div>
-          <div className="count">staff only</div>
-        </div>
-      </div>
-
       <main className="wrap login">
         <h2>Sign in</h2>
         <p className="standfirst">

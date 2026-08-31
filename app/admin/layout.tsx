@@ -30,6 +30,8 @@ export default async function AdminLayout({
             <span className="org">APA</span> — Admin
           </div>
 
+          {!user && <div className="count">staff only</div>}
+
           {user && (
             <>
               <nav className="adminnav">

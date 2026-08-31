@@ -18,24 +18,26 @@
 
 ## Build (filled as we go)
 - Plan written: [done]
-- Build 1 (small) status: [verified end to end, not yet live]
-  The whole loop was run against the real APA database and passes:
-    - people + contacts created; every column matches the plan
-    - constraints genuinely enforce: the three inquiry types, the six
-      pipeline statuses, the eight state codes, unique email
-    - RLS on with no policies — the browser key can neither read nor
-      write; only server code with the service key gets through
-    - a form submit writes one person + one contact at new_lead
-    - a second submit from the same email (uppercase) produced one
-      person and two contacts; industry and modern_award were preserved
-      rather than overwritten by the sparser second submission
-    - /admin/leads redirects to /admin/login when signed out and leaks
-      no lead data; signing in with the seeded account works; the page
-      lists both enquiries newest first with all four attributes;
-      sign out re-locks it
-  Remaining, and neither is code: the two Vercel keys are still
-  YOUR_... placeholders, and PR #1 is unmerged. Until both are done
-  this is verified on localhost only, never on the live URL.
+- Build 1 (small) status: ✅ verified on the live site 31 Aug 2026
+  Live at https://apa-day-1.vercel.app (NOT the custom domain — see the
+  Domain line above; apahelpdesk.com.au is still unregistered).
+  Run against production, not localhost:
+    - submitted as a stranger; got the thank-you banner
+    - one people row + one linked contacts row at status new_lead
+    - all four attributes stored: membership_number, industry, state,
+      modern_award
+    - resubmitted from the same email in uppercase: one person, two
+      contacts. industry and modern_award survived the sparser second
+      submission instead of being overwritten
+    - /admin/leads redirects to /admin/login when signed out, leaking
+      no lead data; signed in; both enquiries listed newest first with
+      every attribute readable; sign out re-locks it
+  Test rows were deleted afterwards; both tables are empty.
+  Still open: PR #2 (turns a raw exception page into a readable message
+  when keys are missing). Not required, worth merging.
+- Admin account seeded: ✅ jacqueline@austpayroll.com.au
+  Created in Supabase Auth, email pre-confirmed, and used to sign in on
+  the live site. Temporary password was handed over in chat — change it.
 - Build 2 (all) status: [pending]
 - Resend domain verified: [pending]
 

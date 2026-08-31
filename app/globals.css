@@ -685,3 +685,122 @@ main.wrap.login .standfirst {
 .listing tr:last-child td {
   border-bottom: none;
 }
+
+/* ---------- admin: dashboard ---------- */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.tile {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-top: 4px solid var(--navy);
+  padding: 16px 18px;
+}
+
+.tile:hover {
+  border-top-color: var(--gold);
+}
+
+.tile .n {
+  display: block;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--navy);
+}
+
+/* An untouched lead is the one number that should feel urgent. */
+.tile .n.hot {
+  color: var(--danger);
+}
+
+.tile .lbl {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.pipe-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pipe-strip .step {
+  flex: 1 1 110px;
+  text-decoration: none;
+  color: inherit;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  padding: 10px 12px;
+}
+
+.pipe-strip .step:hover {
+  border-color: var(--navy);
+}
+
+.pipe-strip .step .n {
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.2;
+}
+
+.pipe-strip .step .lbl {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.badge.ageflag {
+  background: #fff;
+  color: var(--ink-soft);
+  border: 1px solid var(--greyblue);
+}
+
+.badge.ageflag.late {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+
+.banner.bad a {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.panel .attrs li a {
+  font-weight: 700;
+}
+
+/* The second filter row reads as a sub-facet of the first, not a peer. */
+.filters.types {
+  margin-top: -12px;
+}
+
+.filters.types a {
+  text-transform: capitalize;
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+.filters.types a.on {
+  font-weight: 700;
+  color: #fff;
+}

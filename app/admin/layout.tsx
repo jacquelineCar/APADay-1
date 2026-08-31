@@ -33,6 +33,7 @@ export default async function AdminLayout({
           {user && (
             <>
               <nav className="adminnav">
+                <Link href="/admin">Dashboard</Link>
                 <Link href="/admin/leads">Enquiries</Link>
                 <Link href="/admin/people">People</Link>
                 <Link href="/admin/orders">Orders</Link>

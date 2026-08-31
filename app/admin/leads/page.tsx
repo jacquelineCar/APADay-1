@@ -1,5 +1,9 @@
 import Link from "next/link";
-import { supabaseAdmin } from "@/lib/supabase";
+import {
+  supabaseAdmin,
+  INQUIRY_TYPES,
+  type InquiryType,
+} from "@/lib/supabase";
 import { updateStatus } from "../crm-actions";
 import { ResultBanner } from "../result-banner";
 import {
@@ -38,6 +42,7 @@ export default async function LeadsPage({
 }: {
   searchParams: Promise<{
     status?: string;
+    type?: string;
     moved?: string;
     err?: string;
   }>;
@@ -47,8 +52,25 @@ export default async function LeadsPage({
     ? (params.status as Status)
     : null;
 
+  const typeFilter = INQUIRY_TYPES.includes(params.type as InquiryType)
+    ? (params.type as InquiryType)
+    : null;
+
   // Come back to the same filtered view the move was made from.
-  const back = filter ? `/admin/leads?status=${filter}` : "/admin/leads";
+  const qs = new URLSearchParams();
+  if (filter) qs.set("status", filter);
+  if (typeFilter) qs.set("type", typeFilter);
+  const back = qs.size ? `/admin/leads?${qs}` : "/admin/leads";
+
+  /** A link to this list with one facet swapped, the other kept. */
+  const linkTo = (patch: { status?: Status | null; type?: InquiryType | null }) => {
+    const next = new URLSearchParams();
+    const status = patch.status === undefined ? filter : patch.status;
+    const type = patch.type === undefined ? typeFilter : patch.type;
+    if (status) next.set("status", status);
+    if (type) next.set("type", type);
+    return next.size ? `/admin/leads?${next}` : "/admin/leads";
+  };
 
   let leads: Lead[] = [];
   let failure: string | null = null;
@@ -64,6 +86,7 @@ export default async function LeadsPage({
       .limit(200);
 
     if (filter) q = q.eq("status", filter);
+    if (typeFilter) q = q.eq("type", typeFilter);
 
     const { data, error } = await q;
     if (error) throw new Error(error.message);
@@ -79,23 +102,38 @@ export default async function LeadsPage({
         <p className="sub">
           {failure
             ? "not connected"
-            : `${leads.length} ${leads.length === 1 ? "enquiry" : "enquiries"}, newest first`}
+            : `${leads.length} ${leads.length === 1 ? "enquiry" : "enquiries"}${typeFilter ? ` of type ${typeFilter}` : ""}, newest first`}
         </p>
       </div>
 
       <ResultBanner moved={params.moved} err={params.err} />
 
       <nav className="filters">
-        <Link className={!filter ? "on" : ""} href="/admin/leads">
-          All
+        <Link className={!filter ? "on" : ""} href={linkTo({ status: null })}>
+          All stages
         </Link>
         {STATUSES.map((s) => (
           <Link
             key={s}
             className={filter === s ? "on" : ""}
-            href={`/admin/leads?status=${s}`}
+            href={linkTo({ status: s })}
           >
             {STATUS_LABELS[s]}
+          </Link>
+        ))}
+      </nav>
+
+      <nav className="filters types">
+        <Link className={!typeFilter ? "on" : ""} href={linkTo({ type: null })}>
+          All types
+        </Link>
+        {INQUIRY_TYPES.map((t) => (
+          <Link
+            key={t}
+            className={typeFilter === t ? "on" : ""}
+            href={linkTo({ type: t })}
+          >
+            {t}
           </Link>
         ))}
       </nav>

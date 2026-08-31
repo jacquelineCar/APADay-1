@@ -51,3 +51,24 @@ export function when(iso: string): string {
     timeZone: "Australia/Sydney",
   });
 }
+
+/** How long ago, in the shortest form that is still honest. */
+export function age(iso: string, now = Date.now()): string {
+  const mins = Math.max(0, Math.round((now - new Date(iso).getTime()) / 60000));
+  if (mins < 60) return `${mins}m`;
+  const hours = Math.round(mins / 60);
+  if (hours < 48) return `${hours}h`;
+  return `${Math.round(hours / 24)}d`;
+}
+
+/** Milliseconds since an ISO timestamp. */
+export function ageMs(iso: string, now = Date.now()): number {
+  return now - new Date(iso).getTime();
+}
+
+/**
+ * The help desk promise from the plan: a member question should be picked
+ * up within two hours. Anything past that is the failure the whole system
+ * exists to prevent, so the dashboard calls it out by name.
+ */
+export const HELPDESK_SLA_MS = 2 * 60 * 60 * 1000;

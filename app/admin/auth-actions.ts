@@ -16,7 +16,16 @@ export async function signIn(form: FormData): Promise<void> {
     redirect("/admin/login?error=missing");
   }
 
-  const supabase = await supabaseAuth();
+  // A misconfigured deployment must not throw a raw exception page at
+  // whoever is trying to sign in. Show the banner; log the real reason.
+  let supabase;
+  try {
+    supabase = await supabaseAuth();
+  } catch (e) {
+    console.error("auth not configured", e);
+    redirect("/admin/login?error=config");
+  }
+
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {

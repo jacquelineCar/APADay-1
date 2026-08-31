@@ -3,6 +3,8 @@ import { signIn } from "../auth-actions";
 const ERRORS: Record<string, string> = {
   missing: "Please enter both your email and your password.",
   denied: "That email and password combination didn't work. Please try again.",
+  config:
+    "Sign-in isn't configured on this deployment yet. The Supabase keys are missing, so nobody can sign in until they're set.",
 };
 
 export const dynamic = "force-dynamic";

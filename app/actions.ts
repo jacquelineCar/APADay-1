@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { sendConfirmation } from "@/lib/email";
 import {
   supabaseAdmin,
   INQUIRY_TYPES,
@@ -148,6 +149,17 @@ export async function submitInquiry(form: FormData): Promise<void> {
     console.error("contacts insert failed", contactError);
     redirect("/?error=server");
   }
+
+  // The lead is safely stored by this point. The confirmation email is a
+  // courtesy on top — it must never be able to fail the submission, so
+  // sendConfirmation swallows its own errors and we only log the outcome.
+  const mail = await sendConfirmation({
+    to: email,
+    name,
+    type,
+    subject: text(form, "subject"),
+  });
+  if (!mail.sent) console.warn("confirmation email not sent:", mail.reason);
 
   redirect("/?sent=1");
 }

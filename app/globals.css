@@ -435,3 +435,46 @@ button.submit:hover {
     width: 100%;
   }
 }
+
+/* ---------- admin: sign in / sign out ---------- */
+.adminbar .signout {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0;
+}
+
+.adminbar .signout .who-in {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.adminbar .signout button {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  background: none;
+  border: none;
+  border-bottom: 2px solid var(--gold);
+  padding: 0 0 1px;
+  cursor: pointer;
+}
+
+.adminbar .signout button:hover {
+  color: var(--navy-deep);
+}
+
+.adminbar .signout button:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* The login screen is deliberately narrow — one job, no distractions. */
+main.wrap.login {
+  max-width: 30rem;
+}
+
+main.wrap.login .standfirst {
+  margin-bottom: 26px;
+}

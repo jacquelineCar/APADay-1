@@ -1,4 +1,6 @@
 import { supabaseAdmin } from "@/lib/supabase";
+import { currentUser } from "@/lib/auth";
+import { signOut } from "../auth-actions";
 
 // Leads must always be fresh — never serve a cached queue.
 export const dynamic = "force-dynamic";
@@ -41,6 +43,7 @@ function when(iso: string): string {
 }
 
 export default async function LeadsPage() {
+  const user = await currentUser();
   let leads: Lead[] = [];
   let failure: string | null = null;
 
@@ -72,6 +75,10 @@ export default async function LeadsPage() {
               ? "not connected"
               : `${leads.length} ${leads.length === 1 ? "enquiry" : "enquiries"}, newest first`}
           </div>
+          <form className="signout" action={signOut}>
+            <span className="who-in">{user?.email}</span>
+            <button type="submit">Sign out</button>
+          </form>
         </div>
       </div>
 

@@ -11,7 +11,16 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await currentUser();
+  // The login page renders inside this layout. If auth is misconfigured,
+  // currentUser() throws — and an unguarded throw here would 500 the one
+  // page whose job is to explain that misconfiguration. Fail to "nobody is
+  // signed in" instead, so the login screen always renders its banner.
+  let user = null;
+  try {
+    user = await currentUser();
+  } catch (e) {
+    console.error("admin layout: auth unavailable", e);
+  }
 
   return (
     <>

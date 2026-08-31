@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabase";
 import { updateStatus } from "../crm-actions";
+import { ResultBanner } from "../result-banner";
 import {
   STATUSES,
   STATUS_LABELS,
@@ -35,12 +36,19 @@ type Lead = {
 export default async function LeadsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{
+    status?: string;
+    moved?: string;
+    err?: string;
+  }>;
 }) {
   const params = await searchParams;
   const filter = STATUSES.includes(params.status as Status)
     ? (params.status as Status)
     : null;
+
+  // Come back to the same filtered view the move was made from.
+  const back = filter ? `/admin/leads?status=${filter}` : "/admin/leads";
 
   let leads: Lead[] = [];
   let failure: string | null = null;
@@ -74,6 +82,8 @@ export default async function LeadsPage({
             : `${leads.length} ${leads.length === 1 ? "enquiry" : "enquiries"}, newest first`}
         </p>
       </div>
+
+      <ResultBanner moved={params.moved} err={params.err} />
 
       <nav className="filters">
         <Link className={!filter ? "on" : ""} href="/admin/leads">
@@ -154,6 +164,7 @@ export default async function LeadsPage({
 
             <form className="pipeline" action={updateStatus}>
               <input type="hidden" name="contact_id" value={lead.id} />
+              <input type="hidden" name="back" value={back} />
               <label htmlFor={`to-${lead.id}`}>Move to</label>
               <select
                 id={`to-${lead.id}`}

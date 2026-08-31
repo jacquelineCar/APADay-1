@@ -15,14 +15,22 @@ export async function sendConfirmation(opts: {
   type: InquiryType;
   subject: string | null;
 }): Promise<{ sent: boolean; reason?: string }> {
+  // ---- Resend is OFF until the sending domain is verified. ----
+  // Nothing is sent while EMAIL_ENABLED is anything other than "true".
+  // Flip it in .env.local once austpayroll.com.au shows Verified in
+  // Resend; no other code change is needed.
+  if (process.env.EMAIL_ENABLED !== "true") {
+    return { sent: false, reason: "email disabled (EMAIL_ENABLED is not true)" };
+  }
+
   const key = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL;
+  const from = process.env.RESEND_FROM_EMAIL ?? process.env.RESEND_FROM;
 
   if (!key || key.includes("YOUR_")) {
     return { sent: false, reason: "RESEND_API_KEY not set" };
   }
   if (!from || from.includes("YOUR_")) {
-    return { sent: false, reason: "RESEND_FROM_EMAIL not set" };
+    return { sent: false, reason: "RESEND_FROM_EMAIL / RESEND_FROM not set" };
   }
 
   const heading = TYPE_LABELS[opts.type] ?? opts.type;

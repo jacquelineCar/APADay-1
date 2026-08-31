@@ -14,7 +14,9 @@
 - Supabase URL: https://nzhoquaiuejhkpdyhegw.supabase.co
 - Supabase service key: in .env.local locally. In Vercel it is still a
   YOUR_... placeholder and must be replaced.
-- Resend account: [confirm] — not needed until Build 2.
+- Resend account: ✅ active. The API key in .env.local authenticates
+  against the Resend API. The SENDING DOMAIN is a separate thing and is
+  NOT verified — see the Build section below before wiring any email.
 
 ## Build (filled as we go)
 - Plan written: [done]
@@ -38,8 +40,51 @@
 - Admin account seeded: ✅ jacqueline@austpayroll.com.au
   Created in Supabase Auth, email pre-confirmed, and used to sign in on
   the live site. Temporary password was handed over in chat — change it.
-- Build 2 (all) status: [pending]
-- Resend domain verified: [pending]
+- Build 2 (all) status: ✅ built and verified 31 Aug 2026 — EXCEPT email.
+  Verified on localhost:3000 against the PRODUCTION Supabase project
+  (nzhoquaiuejhkpdyhegw). NOT deployed: the code is on branch build-2-crm,
+  PR #4. /admin on the live vercel.app site is still Build 1.
+    - migration 0002 applied by hand in the SQL editor; orders and
+      activity_log now exist. Confirmed the project ref first — running it
+      in il-testdrive would have succeeded silently in the wrong database.
+    - submitted as a stranger: one people row, one linked contacts row at
+      new_lead, all four attributes stored, newsletter opt-in captured
+    - ran one lead the whole way: new_lead → contacted → discovery_call →
+      proposal → won. Four activity_log rows, each from_status matching the
+      previous to_status, actor = jacqueline@austpayroll.com.au, notes kept
+    - added an order: $495.00 stored as 49500 cents, visible on the person
+      record and in Orders ("1 order · $495.00 paid" — only paid counts)
+    - person record shows details, enquiries, orders and history together
+    - People search finds a person by membership_number inside the jsonb
+    - Newsletter lists only ok_to_contact = true
+    - all six /admin routes 307 to /admin/login when signed out
+  Test rows deleted afterwards; the cascade removed the order and history.
+  One row deliberately left: test@test.com, submitted by hand during the
+  build. Delete it whenever you like.
+  Two fixes made while verifying:
+    - app/admin/layout.tsx called currentUser() unguarded, so a missing
+      Supabase key made /admin/login 500 instead of showing its own
+      "not configured" banner. It now fails to "nobody is signed in".
+      This matters because the Vercel service key is still a placeholder.
+    - updateStatus wrote the status first and the activity_log row second,
+      swallowing log failures — the badge moved while nothing was recorded.
+      Ordering kept; every outcome now redirects back with a banner,
+      including "Moved, but the history row failed".
+- Resend domain verified: ❌ NO. Do not mark this done until it is.
+  Checked against the Resend API 31 Aug 2026: the account holds exactly one
+  domain, austpayroll.com.au, at status "not_started" — its DNS records have
+  never been added. apahelpdesk.com.au is not in Resend and is not even
+  registered (no nameservers resolve).
+  Decision 31 Aug 2026: send from austpayroll.com.au, whose DNS is on
+  Cloudflare; add apahelpdesk.com.au as a second domain once bought. This
+  deviates from the plan DoD, which names apahelpdesk.com.au.
+  Three records to add in Cloudflare, then press Verify in Resend:
+    TXT  resend._domainkey  (the DKIM p=... value from the Resend dashboard)
+    MX   send               feedback-smtp.ap-northeast-1.amazonses.com, pri 10
+    TXT  send               v=spf1 include:amazonses.com ~all
+  Until then outbound email is OFF behind EMAIL_ENABLED, which must be
+  exactly "true" before anything sends. lib/email.ts is written and ready;
+  the owner-notification email (RESEND_NOTIFY_TO) is not built yet.
 
 # How to use this catalog
 

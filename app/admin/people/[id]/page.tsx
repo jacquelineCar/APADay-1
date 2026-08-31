@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase";
 import { addOrder } from "../../crm-actions";
+import { ResultBanner } from "../../result-banner";
 import {
   ATTR_LABELS,
   ORDER_STATUSES,
@@ -15,10 +16,13 @@ export const dynamic = "force-dynamic";
 
 export default async function PersonPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ added?: string; err?: string }>;
 }) {
   const { id } = await params;
+  const flags = await searchParams;
   const supabase = supabaseAdmin();
 
   const { data: person } = await supabase
@@ -68,6 +72,8 @@ export default async function PersonPage({
             .join(" · ")}
         </p>
       </div>
+
+      <ResultBanner added={flags.added} err={flags.err} />
 
       <section className="panel">
         <h3>Details</h3>

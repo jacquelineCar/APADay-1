@@ -332,30 +332,35 @@ button.submit:hover {
   border: 1px solid var(--greyblue);
 }
 
-.lead .when {
+.lead .when,
+.row-item .when {
   font-size: 13px;
   color: var(--ink-soft);
   margin-left: auto;
 }
 
-.lead .who {
+.lead .who,
+.row-item .who {
   font-size: 18px;
   font-weight: 700;
   margin: 0 0 2px;
 }
 
-.lead .contactline {
+.lead .contactline,
+.row-item .contactline {
   font-size: 14px;
   color: var(--ink-soft);
   margin: 0 0 12px;
 }
 
-.lead .subject {
+.lead .subject,
+.row-item .subject {
   font-weight: 600;
   margin: 0 0 4px;
 }
 
-.lead .message {
+.lead .message,
+.row-item .message {
   white-space: pre-wrap;
   margin: 0 0 14px;
   max-width: 70ch;
@@ -430,7 +435,8 @@ button.submit:hover {
   .form {
     padding: 8px 20px 24px;
   }
-  .lead .when {
+  .lead .when,
+  .row-item .when {
     margin-left: 0;
     width: 100%;
   }
